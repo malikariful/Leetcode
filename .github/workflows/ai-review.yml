@@ -2,9 +2,11 @@ name: Gemini AI Code Reviewer
 
 on:
   issue_comment:
-    types: [created]
+    types: [opened, synchronize, reopened]
 
-permissions: write-all
+permissions: 
+  contents: read
+  pull-requests: write
 
 jobs:
   gemini-code-review:
