@@ -1,18 +1,24 @@
-name: AI Code Reviewer
+name: Gemini AI Code Reviewer
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  issue_comment:
+    types: [created]
+
+permissions: write-all
 
 jobs:
-  review:
+  gemini-code-review:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
+    if: |
+      github.event.issue.pull_request && contains(github.event.comment.body, '/gemini-review')
     steps:
-      - uses: actions/checkout@v4
-      - uses: google-gemini/gemini-cli-action@v1
+      - name: Checkout Repo
+        uses: actions/checkout@v4
         with:
-          api_key: ${{ secrets.GEMINI_API_KEY }}
-          prompt: "Please review this pull request for code quality, bugs, and potential optimizations."
+          fetch-depth: 0
+
+      - uses: truongnh1992/gemini-ai-code-reviewer@main
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: gemini-2.5-flash
