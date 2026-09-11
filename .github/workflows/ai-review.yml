@@ -2,7 +2,7 @@ name: AI Code Reviewer
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
 
 jobs:
   review:
@@ -12,7 +12,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
-      - uses: ancaster/ai-code-reviewer@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - uses: google-gemini/gemini-cli@v1
+        with:
+          api_key: ${{ secrets.GEMINI_API_KEY }}
+          prompt: "Please review this pull request for code quality, bugs, and improvements."
